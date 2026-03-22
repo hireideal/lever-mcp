@@ -1,11 +1,18 @@
-# lever-mcp
+<h1 align="center">lever-mcp</h1>
 
-MCP server for the [Lever ATS API](https://hire.lever.co/developer/documentation), exposing 59 tools over Streamable HTTP.
+<p align="center">
+  Community-developed MCP server for the <a href="https://hire.lever.co/developer/documentation">Lever ATS API</a>, exposing 59 tools over Streamable HTTP.
+</p>
 
-![CI](https://github.com/stefanoamorelli/lever-mcp/actions/workflows/ci.yml/badge.svg)
-![Go](https://img.shields.io/badge/Go-1.24-00ADD8?logo=go)
-![License](https://img.shields.io/badge/License-AGPL--3.0-blue)
-![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-purple)
+<p align="center">
+  <img src="https://github.com/stefanoamorelli/lever-mcp/actions/workflows/ci.yml/badge.svg" alt="CI">
+  <img src="https://img.shields.io/badge/Go-1.24-00ADD8?logo=go" alt="Go">
+  <img src="https://img.shields.io/badge/License-AGPL--3.0-blue" alt="License">
+  <img src="https://img.shields.io/badge/MCP-Streamable_HTTP-purple" alt="MCP">
+</p>
+
+> [!IMPORTANT]
+> This project is **experimental** and provided as-is. It is **not** endorsed by, affiliated with, or supported by Lever or Employ Inc. "Lever" is a trademark of Employ Inc. All product names, logos, and brands are property of their respective owners. Use at your own risk.
 
 ## Quick Start
 
