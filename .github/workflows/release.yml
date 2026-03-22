@@ -2,6 +2,8 @@ name: Release
 
 on:
   push:
+    branches: [main]
+    paths: [CHANGELOG.md]
     tags:
       - "v*"
 
@@ -9,19 +11,66 @@ permissions:
   contents: write
 
 jobs:
+  tag:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.VERSION }}
+      created: ${{ steps.create-tag.outputs.created }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Extract latest version from CHANGELOG
+        id: extract
+        run: |
+          VERSION=$(grep -m1 '^## ' CHANGELOG.md | grep -oP '\d+\.\d+\.\d+')
+          echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Detected version: ${VERSION}"
+
+      - name: Create tag if it does not exist
+        id: create-tag
+        run: |
+          if git rev-parse "v${{ steps.extract.outputs.VERSION }}" >/dev/null 2>&1; then
+            echo "Tag v${{ steps.extract.outputs.VERSION }} already exists, skipping."
+            echo "created=false" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name "${{ github.actor }}"
+            git config user.email "${{ github.actor }}@users.noreply.github.com"
+            git tag -a "v${{ steps.extract.outputs.VERSION }}" -m "v${{ steps.extract.outputs.VERSION }}"
+            git push origin "v${{ steps.extract.outputs.VERSION }}"
+            echo "created=true" >> "$GITHUB_OUTPUT"
+          fi
+
   release:
+    if: |
+      (github.ref_type == 'tag') ||
+      (needs.tag.outputs.created == 'true')
+    needs: [tag]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_type == 'tag' && github.ref || format('refs/tags/v{0}', needs.tag.outputs.version) }}
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: "1.24"
 
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "VERSION=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "VERSION=v${{ needs.tag.outputs.version }}" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Cross-compile
         run: |
-          VERSION=${GITHUB_REF_NAME}
+          VERSION=${{ steps.version.outputs.VERSION }}
           declare -a TARGETS=(
             "linux/amd64"
             "linux/arm64"
@@ -39,13 +88,14 @@ jobs:
               output="${output}.exe"
             fi
             echo "Building ${GOOS}/${GOARCH}..."
-            GOOS=$GOOS GOARCH=$GOARCH go build -o "$output" ./cmd/lever-mcp
+            GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w -X main.version=${VERSION}" -o "$output" ./cmd/lever-mcp
           done
 
       - name: Extract changelog
         id: changelog
         run: |
-          VERSION=${GITHUB_REF_NAME#v}
+          VERSION=${{ steps.version.outputs.VERSION }}
+          VERSION=${VERSION#v}
           CHANGELOG=""
           if [ -f CHANGELOG.md ]; then
             CHANGELOG=$(awk "/^## .*${VERSION}/{found=1; next} /^## /{if(found) exit} found{print}" CHANGELOG.md)
@@ -59,5 +109,6 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ steps.version.outputs.VERSION }}
           body: ${{ steps.changelog.outputs.BODY }}
           files: dist/*
