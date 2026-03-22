@@ -1,17 +1,17 @@
 # lever-mcp
 
-MCP server for the Lever ATS API -- 59 tools over Streamable HTTP.
+MCP server for the [Lever ATS API](https://hire.lever.co/developer/documentation), exposing 59 tools over Streamable HTTP.
 
 ![CI](https://github.com/stefanoamorelli/lever-mcp/actions/workflows/ci.yml/badge.svg)
 ![Go](https://img.shields.io/badge/Go-1.24-00ADD8?logo=go)
-![License](https://img.shields.io/badge/License-MIT-blue)
+![License](https://img.shields.io/badge/License-AGPL--3.0-blue)
 ![MCP](https://img.shields.io/badge/MCP-Streamable_HTTP-purple)
 
 ## Quick Start
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `LEVER_API_KEY` | Yes | -- | Lever API key |
+| `LEVER_API_KEY` | Yes | | Lever API key |
 | `PORT` | No | `3000` | HTTP listen port |
 | `LEVER_BASE_URL` | No | `https://api.lever.co/v1` | Override for sandbox or EU regions |
 
@@ -28,18 +28,18 @@ export LEVER_API_KEY=your-key
 
 The server exposes two endpoints:
 
-- `POST /mcp` -- MCP Streamable HTTP
-- `GET /health` -- health check
+- `POST /mcp` (MCP Streamable HTTP)
+- `GET /health` (health check)
 
 ## Tool Filtering
 
 Restrict which tools are registered using comma-separated env vars:
 
 ```bash
-# allowlist -- only these tools are registered
+# allowlist: only these tools are registered
 LEVER_ENABLED_TOOLS=list_opportunities,get_opportunity
 
-# blocklist -- everything except these
+# blocklist: everything except these
 LEVER_DISABLED_TOOLS=delete_opportunity_note,delete_webhook
 ```
 
@@ -49,68 +49,68 @@ If both are set, `LEVER_ENABLED_TOOLS` takes precedence.
 
 Legend: :eyes: read | :pencil2: create | :arrows_counterclockwise: update | :wastebasket: destructive
 
-| Category | Tool | Annotation |
-|---|---|---|
-| **Opportunities** | `list_opportunities` | :eyes: |
-| | `get_opportunity` | :eyes: |
-| | `create_opportunity` | :pencil2: |
-| | `list_deleted_opportunities` | :eyes: |
-| **Opportunity Actions** | `archive_opportunity` | :arrows_counterclockwise: |
-| | `change_opportunity_stage` | :arrows_counterclockwise: |
-| | `add_opportunity_tags` | :pencil2: |
-| | `add_opportunity_sources` | :pencil2: |
-| | `add_opportunity_links` | :pencil2: |
-| | `remove_opportunity_tags` | :arrows_counterclockwise: |
-| | `remove_opportunity_sources` | :arrows_counterclockwise: |
-| | `remove_opportunity_links` | :arrows_counterclockwise: |
-| **Notes** | `list_opportunity_notes` | :eyes: |
-| | `create_opportunity_note` | :pencil2: |
-| | `delete_opportunity_note` | :wastebasket: |
-| **Offers** | `list_opportunity_offers` | :eyes: |
-| **Interviews** | `list_opportunity_interviews` | :eyes: |
-| | `update_opportunity_interview` | :arrows_counterclockwise: |
-| | `delete_opportunity_interview` | :wastebasket: |
-| **Feedback** | `list_opportunity_feedback` | :eyes: |
-| | `get_opportunity_feedback` | :eyes: |
-| | `create_opportunity_feedback` | :pencil2: |
-| | `update_opportunity_feedback` | :arrows_counterclockwise: |
-| | `delete_opportunity_feedback` | :wastebasket: |
-| **Panels** | `create_opportunity_panel` | :pencil2: |
-| | `delete_opportunity_panel` | :wastebasket: |
-| **Referrals** | `list_opportunity_referrals` | :eyes: |
-| **Resumes** | `list_opportunity_resumes` | :eyes: |
-| **Files** | `list_opportunity_files` | :eyes: |
-| **Applications** | `list_opportunity_applications` | :eyes: |
-| | `get_opportunity_application` | :eyes: |
-| **Forms** | `list_opportunity_forms` | :eyes: |
-| **Archive Reasons** | `list_archive_reasons` | :eyes: |
-| | `get_archive_reason` | :eyes: |
-| **Contacts** | `get_contact` | :eyes: |
-| **Postings** | `list_postings` | :eyes: |
-| | `get_posting` | :eyes: |
-| | `create_posting` | :pencil2: |
-| | `update_posting` | :arrows_counterclockwise: |
-| | `apply_to_posting` | :pencil2: |
-| | `get_posting_apply_questions` | :eyes: |
-| **Users** | `list_users` | :eyes: |
-| | `get_user` | :eyes: |
-| | `create_user` | :pencil2: |
-| | `deactivate_user` | :arrows_counterclockwise: |
-| | `reactivate_user` | :arrows_counterclockwise: |
-| **Stages** | `list_stages` | :eyes: |
-| **Sources** | `list_sources` | :eyes: |
-| **Tags** | `list_tags` | :eyes: |
-| **Requisitions** | `list_requisitions` | :eyes: |
-| | `get_requisition` | :eyes: |
-| **Templates** | `list_feedback_templates` | :eyes: |
-| | `create_feedback_template` | :pencil2: |
-| | `delete_feedback_template` | :wastebasket: |
-| | `list_form_templates` | :eyes: |
-| **Webhooks** | `list_webhooks` | :eyes: |
-| | `create_webhook` | :pencil2: |
-| | `delete_webhook` | :wastebasket: |
-| **EEO** | `list_eeo_responses` | :eyes: |
-| **Audit Events** | `list_audit_events` | :eyes: |
+| Category | Tool | Annotation | API Docs |
+|---|---|---|---|
+| **Opportunities** | `list_opportunities` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-opportunities) |
+| | `get_opportunity` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-a-single-opportunity) |
+| | `create_opportunity` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#create-an-opportunity) |
+| | `list_deleted_opportunities` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-deleted-opportunities) |
+| **Opportunity Actions** | `archive_opportunity` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#update-opportunity-archived-state) |
+| | `change_opportunity_stage` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#update-opportunity-stage) |
+| | `add_opportunity_tags` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#update-opportunity-tags) |
+| | `add_opportunity_sources` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#update-opportunity-sources) |
+| | `add_opportunity_links` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#update-contact-links-by-opportunity) |
+| | `remove_opportunity_tags` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#update-opportunity-tags) |
+| | `remove_opportunity_sources` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#update-opportunity-sources) |
+| | `remove_opportunity_links` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#update-contact-links-by-opportunity) |
+| **Notes** | `list_opportunity_notes` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-notes) |
+| | `create_opportunity_note` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#create-a-note) |
+| | `delete_opportunity_note` | :wastebasket: | [docs](https://hire.lever.co/developer/documentation#delete-a-note) |
+| **Offers** | `list_opportunity_offers` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-offers) |
+| **Interviews** | `list_opportunity_interviews` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-interviews) |
+| | `update_opportunity_interview` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#update-an-interview) |
+| | `delete_opportunity_interview` | :wastebasket: | [docs](https://hire.lever.co/developer/documentation#delete-an-interview) |
+| **Feedback** | `list_opportunity_feedback` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-feedback) |
+| | `get_opportunity_feedback` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-a-feedback-form) |
+| | `create_opportunity_feedback` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#create-a-feedback-form) |
+| | `update_opportunity_feedback` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#update-feedback) |
+| | `delete_opportunity_feedback` | :wastebasket: | [docs](https://hire.lever.co/developer/documentation#delete-feedback) |
+| **Panels** | `create_opportunity_panel` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#create-a-panel) |
+| | `delete_opportunity_panel` | :wastebasket: | [docs](https://hire.lever.co/developer/documentation#delete-a-panel) |
+| **Referrals** | `list_opportunity_referrals` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-referrals) |
+| **Resumes** | `list_opportunity_resumes` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-resumes) |
+| **Files** | `list_opportunity_files` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-files) |
+| **Applications** | `list_opportunity_applications` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-applications) |
+| | `get_opportunity_application` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-a-single-application) |
+| **Forms** | `list_opportunity_forms` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-profile-forms) |
+| **Archive Reasons** | `list_archive_reasons` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-archive-reasons) |
+| | `get_archive_reason` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-a-single-archive-reason) |
+| **Contacts** | `get_contact` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-a-single-contact) |
+| **Postings** | `list_postings` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-postings) |
+| | `get_posting` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-a-single-posting) |
+| | `create_posting` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#create-a-posting) |
+| | `update_posting` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#update-a-posting) |
+| | `apply_to_posting` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#apply-to-a-posting) |
+| | `get_posting_apply_questions` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-posting-application-questions) |
+| **Users** | `list_users` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-users) |
+| | `get_user` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-a-single-user) |
+| | `create_user` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#create-a-user) |
+| | `deactivate_user` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#deactivate-a-user) |
+| | `reactivate_user` | :arrows_counterclockwise: | [docs](https://hire.lever.co/developer/documentation#reactivate-a-user) |
+| **Stages** | `list_stages` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-stages) |
+| **Sources** | `list_sources` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-sources) |
+| **Tags** | `list_tags` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-tags) |
+| **Requisitions** | `list_requisitions` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-requisitions) |
+| | `get_requisition` | :eyes: | [docs](https://hire.lever.co/developer/documentation#retrieve-a-single-requisition) |
+| **Templates** | `list_feedback_templates` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-feedback-templates) |
+| | `create_feedback_template` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#create-a-feedback-template) |
+| | `delete_feedback_template` | :wastebasket: | [docs](https://hire.lever.co/developer/documentation#delete-a-feedback-template) |
+| | `list_form_templates` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-profile-form-templates) |
+| **Webhooks** | `list_webhooks` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-webhooks) |
+| | `create_webhook` | :pencil2: | [docs](https://hire.lever.co/developer/documentation#create-a-webhook) |
+| | `delete_webhook` | :wastebasket: | [docs](https://hire.lever.co/developer/documentation#delete-a-webhook) |
+| **EEO** | `list_eeo_responses` | :eyes: | [docs](https://hire.lever.co/developer/documentation#eeo) |
+| **Audit Events** | `list_audit_events` | :eyes: | [docs](https://hire.lever.co/developer/documentation#list-all-audit-events) |
 
 ## Client Configuration
 
@@ -145,4 +145,6 @@ go test ./internal/tools/ -run TestConformance         # annotation & schema con
 
 ## License
 
-MIT
+[AGPL-3.0](LICENSE)
+
+Copyright (c) 2026 [Stefano Amorelli](https://amorelli.tech) (stefano@amorelli.tech)
