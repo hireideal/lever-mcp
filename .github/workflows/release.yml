@@ -1,0 +1,63 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+
+      - name: Cross-compile
+        run: |
+          VERSION=${GITHUB_REF_NAME}
+          declare -a TARGETS=(
+            "linux/amd64"
+            "linux/arm64"
+            "darwin/amd64"
+            "darwin/arm64"
+            "windows/amd64"
+            "windows/arm64"
+          )
+          mkdir -p dist
+          for target in "${TARGETS[@]}"; do
+            GOOS="${target%/*}"
+            GOARCH="${target#*/}"
+            output="dist/lever-mcp-${GOOS}-${GOARCH}"
+            if [ "$GOOS" = "windows" ]; then
+              output="${output}.exe"
+            fi
+            echo "Building ${GOOS}/${GOARCH}..."
+            GOOS=$GOOS GOARCH=$GOARCH go build -o "$output" ./cmd/lever-mcp
+          done
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          CHANGELOG=""
+          if [ -f CHANGELOG.md ]; then
+            CHANGELOG=$(awk "/^## .*${VERSION}/{found=1; next} /^## /{if(found) exit} found{print}" CHANGELOG.md)
+          fi
+          {
+            echo "BODY<<EOF"
+            echo "$CHANGELOG"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: ${{ steps.changelog.outputs.BODY }}
+          files: dist/*
